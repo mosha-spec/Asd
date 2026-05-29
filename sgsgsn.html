@@ -1,0 +1,6825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Mosha Studio</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Poppins:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<!-- Lenis -->
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
+
+<style>
+
+/* =========================
+RESET
+========================= */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+html{
+scroll-behavior:auto;
+}
+
+body{
+background:#08070c;
+color:#f5f5f5;
+font-family:'Poppins',sans-serif;
+overflow-x:hidden;
+min-height:100vh;
+}
+
+/* =========================
+ROOT COLORS
+========================= */
+
+:root{
+
+--bg:#08070c;
+
+--bg-soft:#0f0d16;
+
+--white:#f5f5f5;
+
+--muted:#a1a1aa;
+
+--gold:#d6b36a;
+
+--gold-soft:#d6b36a22;
+
+--purple:#24182f;
+
+--glass:rgba(255,255,255,.05);
+
+--border:rgba(255,255,255,.08);
+
+}
+
+/* =========================
+NOISE OVERLAY
+========================= */
+
+.noise{
+position:fixed;
+inset:0;
+
+background-image:
+url("https://grainy-gradients.vercel.app/noise.svg");
+
+opacity:.045;
+
+pointer-events:none;
+
+z-index:1;
+}
+
+/* =========================
+BACKGROUND FOG
+========================= */
+
+.fog-layer{
+position:fixed;
+inset:0;
+
+overflow:hidden;
+
+z-index:-2;
+}
+
+.fog{
+position:absolute;
+
+width:600px;
+height:600px;
+
+border-radius:50%;
+
+filter:blur(120px);
+
+opacity:.14;
+}
+
+.fog-1{
+background:#4b2d67;
+
+top:-10%;
+left:-10%;
+
+animation:floatingOne 16s ease-in-out infinite;
+}
+
+.fog-2{
+background:#1f1630;
+
+bottom:-20%;
+right:-10%;
+
+animation:floatingTwo 20s ease-in-out infinite;
+}
+
+@keyframes floatingOne{
+
+0%{
+transform:translate(0,0);
+}
+
+50%{
+transform:translate(60px,40px);
+}
+
+100%{
+transform:translate(0,0);
+}
+
+}
+
+@keyframes floatingTwo{
+
+0%{
+transform:translate(0,0);
+}
+
+50%{
+transform:translate(-70px,-20px);
+}
+
+100%{
+transform:translate(0,0);
+}
+
+}
+
+/* =========================
+GLOBAL ROSE GLOW
+========================= */
+
+.rose-aura{
+
+position:fixed;
+
+width:420px;
+height:420px;
+
+border-radius:50%;
+
+background:
+radial-gradient(circle,
+rgba(139,92,246,.15),
+transparent 70%);
+
+filter:blur(80px);
+
+top:20%;
+left:-10%;
+
+z-index:-1;
+
+animation:
+roseMove 18s ease-in-out infinite;
+}
+
+@keyframes roseMove{
+
+0%{
+transform:translateY(0px)
+translateX(0px);
+}
+
+50%{
+transform:translateY(60px)
+translateX(30px);
+}
+
+100%{
+transform:translateY(0px)
+translateX(0px);
+}
+
+}
+
+/* =========================
+SCROLL BAR
+========================= */
+
+::-webkit-scrollbar{
+width:6px;
+}
+
+::-webkit-scrollbar-track{
+background:#0a0910;
+}
+
+::-webkit-scrollbar-thumb{
+background:#2a2234;
+border-radius:20px;
+}
+
+/* =========================
+LAYOUT
+========================= */
+
+main{
+position:relative;
+z-index:5;
+}
+
+section{
+
+position:relative;
+
+min-height:100vh;
+
+padding:
+120px 7vw;
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+}
+
+/* =========================
+TYPOGRAPHY
+========================= */
+
+h1,h2,h3{
+
+font-family:
+'Cormorant Garamond',
+serif;
+
+font-weight:400;
+
+letter-spacing:1px;
+
+}
+
+.hero-title{
+
+font-size:
+clamp(60px,10vw,140px);
+
+line-height:.9;
+
+text-align:center;
+
+font-weight:300;
+}
+
+.hero-sub{
+
+margin-top:30px;
+
+font-size:14px;
+
+letter-spacing:3px;
+
+text-transform:uppercase;
+
+color:var(--muted);
+
+text-align:center;
+}
+
+.big-quote{
+
+font-size:
+clamp(32px,5vw,72px);
+
+line-height:1.15;
+
+max-width:900px;
+
+text-align:center;
+
+font-family:
+'Cormorant Garamond',
+serif;
+
+font-weight:300;
+}
+
+/* =========================
+GLASS SYSTEM
+========================= */
+
+.glass{
+
+background:
+rgba(255,255,255,.04);
+
+backdrop-filter:
+blur(30px);
+
+-webkit-backdrop-filter:
+blur(30px);
+
+border:
+1px solid
+rgba(255,255,255,.06);
+
+box-shadow:
+0 0 40px
+rgba(0,0,0,.3);
+
+}
+
+/* =========================
+LOADING SCREEN
+========================= */
+
+#loader{
+
+position:fixed;
+
+inset:0;
+
+background:
+radial-gradient(circle at center,
+#120f19,
+#08070c);
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+flex-direction:column;
+
+z-index:9999;
+
+transition:1.5s ease;
+}
+
+.loader-line{
+
+width:0px;
+height:1px;
+
+background:var(--gold);
+
+box-shadow:
+0 0 20px
+rgba(214,179,106,.4);
+
+margin-bottom:30px;
+}
+
+.loader-title{
+
+font-size:42px;
+
+font-family:
+'Cormorant Garamond',
+serif;
+
+letter-spacing:4px;
+
+font-weight:300;
+}
+
+.loader-sub{
+
+margin-top:12px;
+
+font-size:12px;
+
+letter-spacing:4px;
+
+text-transform:uppercase;
+
+color:rgba(255,255,255,.45);
+}
+
+/* =========================
+PASSWORD GATE
+========================= */
+
+#gate{
+
+position:relative;
+
+z-index:10;
+}
+
+.gate-box{
+
+width:min(420px,90vw);
+
+padding:
+50px 40px;
+
+border-radius:30px;
+
+text-align:center;
+}
+
+.gate-title{
+
+font-size:40px;
+
+margin-bottom:14px;
+}
+
+.gate-text{
+
+font-size:13px;
+
+line-height:1.8;
+
+color:var(--muted);
+
+margin-bottom:30px;
+}
+
+.secret-input{
+
+width:100%;
+
+height:56px;
+
+background:
+rgba(255,255,255,.04);
+
+border:
+1px solid
+rgba(255,255,255,.08);
+
+outline:none;
+
+border-radius:18px;
+
+padding:0 20px;
+
+color:white;
+
+font-size:14px;
+
+letter-spacing:2px;
+}
+
+.secret-input::placeholder{
+color:#777;
+}
+
+/* =========================
+HERO
+========================= */
+
+#hero{
+overflow:hidden;
+}
+
+.hero-inner{
+position:relative;
+z-index:2;
+}
+
+.hero-particles{
+
+position:absolute;
+
+inset:0;
+
+overflow:hidden;
+}
+
+.particle{
+
+position:absolute;
+
+width:4px;
+height:4px;
+
+border-radius:50%;
+
+background:
+rgba(255,255,255,.2);
+
+animation:
+particleFloat linear infinite;
+}
+
+@keyframes particleFloat{
+
+0%{
+transform:
+translateY(0px);
+opacity:0;
+}
+
+20%{
+opacity:1;
+}
+
+100%{
+transform:
+translateY(-120vh);
+opacity:0;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<!-- NOISE -->
+<div class="noise"></div>
+
+<!-- FOG -->
+<div class="fog-layer">
+
+<div class="fog fog-1"></div>
+
+<div class="fog fog-2"></div>
+
+</div>
+
+<!-- ROSE AURA -->
+<div class="rose-aura"></div>
+
+<!-- LOADER -->
+<div id="loader">
+
+<div class="loader-line"></div>
+
+<div class="loader-title">
+Mosha Studio
+</div>
+
+<div class="loader-sub">
+Private universe for two souls
+</div>
+
+</div>
+
+<main>
+
+<!-- PASSWORD GATE -->
+
+<section id="gate">
+
+<div class="gate-box glass">
+
+<h2 class="gate-title">
+Enter the secret key
+</h2>
+
+<p class="gate-text">
+
+Not every universe was made
+to be seen by everyone
+
+</p>
+
+<input
+type="password"
+class="secret-input"
+id="secretInput"
+placeholder="••••••••"
+/>
+
+</div>
+
+</section>
+
+<!-- HERO -->
+
+<section id="hero">
+
+<div class="hero-particles" id="particles"></div>
+
+<div class="hero-inner">
+
+<h1 class="hero-title">
+
+Salim
+<br>
+&
+<br>
+Amira
+
+</h1>
+
+<p class="hero-sub">
+
+Some meetings feel written by destiny
+
+</p>
+
+</div>
+
+</section>
+
+</main>
+
+<script>
+
+/* =========================
+LENIS
+========================= */
+
+const lenis = new Lenis({
+
+duration:1.2,
+
+smoothWheel:true,
+
+smoothTouch:false,
+
+});
+
+function raf(time){
+
+lenis.raf(time);
+
+requestAnimationFrame(raf);
+
+}
+
+requestAnimationFrame(raf);
+
+/* =========================
+GSAP
+========================= */
+
+gsap.registerPlugin(ScrollTrigger);
+
+/* =========================
+LOADER ANIMATION
+========================= */
+
+const tl = gsap.timeline();
+
+tl.to(".loader-line",{
+
+width:180,
+duration:1.8,
+ease:"power3.inOut"
+
+})
+
+.to(".loader-title",{
+
+opacity:1,
+y:-10,
+duration:1
+
+},"-=1")
+
+.to(".loader-sub",{
+
+opacity:1,
+duration:1
+
+},"-=0.8")
+
+setTimeout(()=>{
+
+gsap.to("#loader",{
+
+opacity:0,
+duration:1.5,
+pointerEvents:"none"
+
+});
+
+},3200);
+
+/* =========================
+PARTICLES
+========================= */
+
+const particles =
+document.getElementById("particles");
+
+for(let i=0;i<35;i++){
+
+const p =
+document.createElement("span");
+
+p.classList.add("particle");
+
+p.style.left =
+Math.random()*100 + "%";
+
+p.style.top =
+Math.random()*100 + "%";
+
+p.style.animationDuration =
+(10 + Math.random()*20)+"s";
+
+p.style.opacity =
+Math.random();
+
+particles.appendChild(p);
+
+}
+<!-- =========================
+SCROLL ATMOSPHERE
+========================= -->
+
+<style>
+
+/* =========================
+SCENE SPACING
+========================= */
+
+.scene{
+
+position:relative;
+
+padding:
+180px 8vw;
+
+min-height:120vh;
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+}
+
+/* =========================
+MEMORY STORY
+========================= */
+
+.story-wrap{
+
+width:min(1200px,100%);
+
+display:flex;
+
+flex-direction:column;
+
+gap:220px;
+
+position:relative;
+
+}
+
+.memory{
+
+position:relative;
+
+display:grid;
+
+grid-template-columns:
+1fr 1fr;
+
+gap:80px;
+
+align-items:center;
+
+}
+
+.memory.reverse .memory-image{
+order:2;
+}
+
+.memory.reverse .memory-content{
+order:1;
+}
+
+.memory-image{
+
+position:relative;
+
+height:650px;
+
+border-radius:32px;
+
+overflow:hidden;
+
+}
+
+.memory-image::after{
+
+content:"";
+
+position:absolute;
+
+inset:0;
+
+background:
+linear-gradient(
+to top,
+rgba(8,7,12,.7),
+transparent 40%
+);
+
+z-index:2;
+}
+
+.memory-image img{
+
+width:100%;
+height:100%;
+
+object-fit:cover;
+
+transform:scale(1.05);
+
+filter:
+brightness(.8)
+contrast(1.05)
+saturate(.95);
+
+transition:8s ease;
+}
+
+.memory:hover img{
+transform:scale(1.12);
+}
+
+.memory-content{
+
+position:relative;
+
+z-index:3;
+
+}
+
+.memory-tag{
+
+font-size:12px;
+
+letter-spacing:4px;
+
+text-transform:uppercase;
+
+color:
+rgba(214,179,106,.8);
+
+margin-bottom:24px;
+}
+
+.memory-title{
+
+font-size:
+clamp(40px,5vw,88px);
+
+line-height:.95;
+
+margin-bottom:28px;
+}
+
+.memory-text{
+
+max-width:460px;
+
+line-height:2;
+
+font-size:14px;
+
+color:var(--muted);
+}
+
+/* =========================
+FLOATING BLUR ORBS
+========================= */
+
+.blur-orb{
+
+position:absolute;
+
+border-radius:50%;
+
+filter:blur(90px);
+
+opacity:.12;
+
+pointer-events:none;
+}
+
+.orb-1{
+
+width:260px;
+height:260px;
+
+background:#6d4ba3;
+
+top:10%;
+right:-100px;
+}
+
+.orb-2{
+
+width:320px;
+height:320px;
+
+background:#3d2b56;
+
+bottom:0;
+left:-140px;
+}
+
+/* =========================
+QUOTE SECTION
+========================= */
+
+.quote-section{
+
+min-height:140vh;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+align-items:center;
+
+position:relative;
+
+padding:0 8vw;
+}
+
+.quote-line{
+
+width:120px;
+height:1px;
+
+background:
+rgba(214,179,106,.5);
+
+margin:40px 0;
+}
+
+.quote-sub{
+
+margin-top:30px;
+
+font-size:13px;
+
+letter-spacing:4px;
+
+text-transform:uppercase;
+
+color:rgba(255,255,255,.4);
+}
+
+/* =========================
+MEMORY MAP
+========================= */
+
+#map{
+
+position:relative;
+
+overflow:hidden;
+
+}
+
+.map-box{
+
+position:relative;
+
+width:min(1300px,100%);
+
+height:750px;
+
+border-radius:40px;
+
+overflow:hidden;
+
+background:
+linear-gradient(
+145deg,
+rgba(255,255,255,.03),
+rgba(255,255,255,.01)
+);
+
+border:
+1px solid
+rgba(255,255,255,.05);
+
+backdrop-filter:
+blur(40px);
+}
+
+.map-grid{
+
+position:absolute;
+
+inset:0;
+
+background-image:
+
+linear-gradient(
+rgba(255,255,255,.03) 1px,
+transparent 1px
+),
+
+linear-gradient(
+90deg,
+rgba(255,255,255,.03) 1px,
+transparent 1px
+);
+
+background-size:
+80px 80px;
+
+opacity:.4;
+}
+
+.map-pin{
+
+position:absolute;
+
+width:16px;
+height:16px;
+
+border-radius:50%;
+
+background:var(--gold);
+
+box-shadow:
+
+0 0 20px
+rgba(214,179,106,.9),
+
+0 0 60px
+rgba(214,179,106,.5);
+
+}
+
+.map-pin::before{
+
+content:"";
+
+position:absolute;
+
+inset:-12px;
+
+border-radius:50%;
+
+border:
+1px solid
+rgba(214,179,106,.25);
+
+animation:
+pulse 3s infinite;
+}
+
+@keyframes pulse{
+
+0%{
+transform:scale(.6);
+opacity:1;
+}
+
+100%{
+transform:scale(2);
+opacity:0;
+}
+
+}
+
+/* =========================
+ENDING
+========================= */
+
+#ending{
+
+min-height:100vh;
+
+flex-direction:column;
+
+overflow:hidden;
+}
+
+.end-rose{
+
+width:180px;
+height:180px;
+
+border-radius:50%;
+
+background:
+radial-gradient(circle,
+rgba(214,179,106,.25),
+transparent 70%);
+
+filter:blur(30px);
+
+margin-bottom:60px;
+
+animation:
+endingRose 8s ease-in-out infinite;
+}
+
+@keyframes endingRose{
+
+0%{
+transform:scale(1);
+opacity:.7;
+}
+
+50%{
+transform:scale(1.2);
+opacity:1;
+}
+
+100%{
+transform:scale(1);
+opacity:.7;
+}
+
+}
+
+.end-title{
+
+font-size:
+clamp(36px,6vw,90px);
+
+font-family:
+'Cormorant Garamond',
+serif;
+
+font-weight:300;
+
+text-align:center;
+
+max-width:900px;
+
+line-height:1.1;
+}
+
+.end-sub{
+
+margin-top:26px;
+
+letter-spacing:5px;
+
+font-size:12px;
+
+text-transform:uppercase;
+
+color:rgba(255,255,255,.4);
+}
+
+/* =========================
+MOBILE
+========================= */
+
+@media(max-width:900px){
+
+.memory{
+
+grid-template-columns:1fr;
+
+gap:50px;
+
+}
+
+.memory.reverse .memory-image{
+order:1;
+}
+
+.memory.reverse .memory-content{
+order:2;
+}
+
+.memory-image{
+height:500px;
+}
+
+.story-wrap{
+gap:160px;
+}
+
+.map-box{
+height:500px;
+}
+
+.hero-title{
+font-size:80px;
+}
+
+.big-quote{
+font-size:44px;
+}
+
+}
+
+</style>
+
+<!-- =========================
+MEMORY STORY
+========================= -->
+
+<section class="scene">
+
+<div class="story-wrap">
+
+<!-- MEMORY 1 -->
+
+<div class="memory">
+
+<div class="memory-image glass">
+
+<div class="blur-orb orb-1"></div>
+
+<img src="https://i.ibb.co/Q7dgd0rd/d543e94bef52829c9fb99faea0529451.jpg">
+
+</div>
+
+<div class="memory-content">
+
+<div class="memory-tag">
+First Talk
+</div>
+
+<h2 class="memory-title">
+Some silences
+feel warmer
+than words
+</h2>
+
+<p class="memory-text">
+
+Some people arrive quietly
+without noise
+without warning
+yet somehow
+they rearrange
+the entire feeling
+of your world
+
+</p>
+
+</div>
+
+</div>
+
+<!-- MEMORY 2 -->
+
+<div class="memory reverse">
+
+<div class="memory-image glass">
+
+<div class="blur-orb orb-2"></div>
+
+<img src="https://i.ibb.co/wFQDntW5/4a02b0b1ea0630bbf97279bd0c839db6.jpg">
+
+</div>
+
+<div class="memory-content">
+
+<div class="memory-tag">
+First Laugh
+</div>
+
+<h2 class="memory-title">
+Happiness
+looked softer
+around you
+</h2>
+
+<p class="memory-text">
+
+There are laughs
+that disappear quickly
+
+and there are laughs
+that become memories forever
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================
+QUOTE SCENE
+========================= -->
+
+<section class="quote-section">
+
+<div class="big-quote reveal-text">
+
+Love is not loud
+
+it moves slowly
+
+like light entering
+a dark room
+
+</div>
+
+<div class="quote-line"></div>
+
+<div class="quote-sub">
+A private universe
+</div>
+
+</section>
+
+<!-- =========================
+MAP SECTION
+========================= -->
+
+<section id="map">
+
+<div class="map-box">
+
+<div class="map-grid"></div>
+
+<div class="map-pin"
+style="top:32%;left:28%;">
+</div>
+
+<div class="map-pin"
+style="top:50%;left:62%;">
+</div>
+
+<div class="map-pin"
+style="top:70%;left:40%;">
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================
+ENDING
+========================= -->
+
+<section id="ending">
+
+<div class="end-rose"></div>
+
+<h2 class="end-title">
+
+You were never
+just another story
+
+</h2>
+
+<div class="end-sub">
+
+Forever was hidden
+inside small moments
+
+</div>
+
+</section>
+
+<script>
+
+/* =========================
+PASSWORD SYSTEM
+========================= */
+
+const input =
+document.getElementById("secretInput");
+
+input.addEventListener("keydown",(e)=>{
+
+if(
+e.key === "Enter" &&
+input.value === "199"
+){
+
+gsap.to("#gate",{
+
+opacity:0,
+duration:1.2,
+y:-60,
+pointerEvents:"none"
+
+});
+
+gsap.to(window,{
+
+scrollTo:"#hero",
+duration:2
+
+});
+
+}
+
+});
+
+/* =========================
+HERO INTRO
+========================= */
+
+gsap.from(".hero-title",{
+
+y:120,
+opacity:0,
+duration:2,
+ease:"power4.out"
+
+});
+
+gsap.from(".hero-sub",{
+
+y:40,
+opacity:0,
+duration:2,
+delay:.5,
+ease:"power3.out"
+
+});
+
+/* =========================
+MEMORY REVEAL
+========================= */
+
+gsap.utils.toArray(".memory")
+.forEach((memory)=>{
+
+gsap.from(memory,{
+
+scrollTrigger:{
+trigger:memory,
+start:"top 80%",
+},
+
+y:120,
+opacity:0,
+duration:1.8,
+ease:"power3.out"
+
+});
+
+});
+
+/* =========================
+QUOTE ANIMATION
+========================= */
+
+gsap.from(".reveal-text",{
+
+scrollTrigger:{
+trigger:".reveal-text",
+start:"top 75%"
+},
+
+opacity:0,
+y:100,
+duration:2.4,
+ease:"power4.out"
+
+});
+
+/* =========================
+MAP PINS
+========================= */
+
+gsap.utils.toArray(".map-pin")
+.forEach((pin,i)=>{
+
+gsap.from(pin,{
+
+scrollTrigger:{
+trigger:"#map",
+start:"top 70%"
+},
+
+scale:0,
+opacity:0,
+duration:1.4,
+delay:i*.2,
+ease:"back.out(2)"
+
+});
+
+});
+
+</script>
+<!-- =========================
+MORE MEMORIES
+========================= -->
+
+<section class="scene">
+
+<div class="story-wrap">
+
+<!-- MEMORY 3 -->
+
+<div class="memory">
+
+<div class="memory-image glass">
+
+<div class="blur-orb orb-1"></div>
+
+<img src="https://i.ibb.co/k68PYVtv/da8fe000ec05def8401da031c7930f8e.jpg">
+
+</div>
+
+<div class="memory-content">
+
+<div class="memory-tag">
+First Photo
+</div>
+
+<h2 class="memory-title">
+
+A moment
+became eternal
+without trying
+
+</h2>
+
+<p class="memory-text">
+
+Some pictures are not memories
+
+they are portals
+
+you look at them once
+and suddenly
+you can hear the feeling again
+
+</p>
+
+</div>
+
+</div>
+
+<!-- MEMORY 4 -->
+
+<div class="memory reverse">
+
+<div class="memory-image glass">
+
+<div class="blur-orb orb-2"></div>
+
+<img src="https://i.ibb.co/cSTtFfWg/2278d40b8ea9e7aab3d7fcdc48650988.jpg">
+
+</div>
+
+<div class="memory-content">
+
+<div class="memory-tag">
+First Promise
+</div>
+
+<h2 class="memory-title">
+
+Not every promise
+needs words
+
+</h2>
+
+<p class="memory-text">
+
+Some promises are hidden
+inside attention
+
+inside waiting
+
+inside staying
+when leaving was easier
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================
+FLOATING QUOTES
+========================= -->
+
+<section class="quote-section">
+
+<div class="floating-quotes">
+
+<div class="floating-quote q1">
+
+You felt familiar
+before I even knew you
+
+</div>
+
+<div class="floating-quote q2">
+
+Some souls
+meet once
+and never separate again
+
+</div>
+
+<div class="floating-quote q3">
+
+Maybe destiny
+moves quietly
+
+</div>
+
+</div>
+
+</section>
+
+<style>
+
+/* =========================
+FLOATING QUOTES
+========================= */
+
+.floating-quotes{
+
+position:relative;
+
+width:100%;
+height:100vh;
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+overflow:hidden;
+}
+
+.floating-quote{
+
+position:absolute;
+
+font-family:
+'Cormorant Garamond',
+serif;
+
+font-size:
+clamp(26px,4vw,64px);
+
+font-weight:300;
+
+line-height:1.2;
+
+text-align:center;
+
+max-width:700px;
+
+color:
+rgba(255,255,255,.85);
+
+opacity:0;
+}
+
+.q1{
+top:20%;
+left:10%;
+}
+
+.q2{
+bottom:18%;
+right:10%;
+}
+
+.q3{
+top:42%;
+left:50%;
+
+transform:
+translateX(-50%);
+}
+
+/* =========================
+SCROLL GLOW
+========================= */
+
+.scroll-glow{
+
+position:fixed;
+
+width:400px;
+height:400px;
+
+border-radius:50%;
+
+pointer-events:none;
+
+background:
+radial-gradient(circle,
+rgba(214,179,106,.06),
+transparent 70%);
+
+filter:blur(60px);
+
+z-index:2;
+
+mix-blend-mode:screen;
+
+transition:
+transform .08s linear;
+}
+
+/* =========================
+TRANSITION OVERLAY
+========================= */
+
+.transition-overlay{
+
+position:fixed;
+
+inset:0;
+
+background:
+radial-gradient(circle at center,
+rgba(255,255,255,.03),
+rgba(8,7,12,.96));
+
+pointer-events:none;
+
+opacity:0;
+
+z-index:50;
+}
+
+/* =========================
+CINEMATIC VIGNETTE
+========================= */
+
+.vignette{
+
+position:fixed;
+
+inset:0;
+
+background:
+radial-gradient(circle,
+transparent 40%,
+rgba(0,0,0,.45));
+
+pointer-events:none;
+
+z-index:3;
+}
+
+/* =========================
+FINAL ATMOSPHERE
+========================= */
+
+.final-atmosphere{
+
+position:absolute;
+
+inset:0;
+
+overflow:hidden;
+
+pointer-events:none;
+}
+
+.final-light{
+
+position:absolute;
+
+width:500px;
+height:500px;
+
+border-radius:50%;
+
+background:
+radial-gradient(circle,
+rgba(214,179,106,.08),
+transparent 70%);
+
+filter:blur(100px);
+
+animation:
+finalFloat 18s ease-in-out infinite;
+}
+
+.final-light.one{
+
+top:-10%;
+left:-10%;
+}
+
+.final-light.two{
+
+bottom:-20%;
+right:-10%;
+
+animation-delay:4s;
+}
+
+@keyframes finalFloat{
+
+0%{
+transform:
+translateY(0)
+translateX(0);
+}
+
+50%{
+transform:
+translateY(60px)
+translateX(40px);
+}
+
+100%{
+transform:
+translateY(0)
+translateX(0);
+}
+
+}
+
+</style>
+
+<!-- =========================
+FINAL ATMOSPHERE
+========================= -->
+
+<div class="final-atmosphere">
+
+<div class="final-light one"></div>
+
+<div class="final-light two"></div>
+
+</div>
+
+<div class="scroll-glow"></div>
+
+<div class="transition-overlay"></div>
+
+<div class="vignette"></div>
+
+<script>
+
+/* =========================
+SCROLL GLOW FOLLOW
+========================= */
+
+const glow =
+document.querySelector(".scroll-glow");
+
+window.addEventListener("mousemove",(e)=>{
+
+glow.style.transform = `
+translate(
+${e.clientX - 200}px,
+${e.clientY - 200}px
+)
+`;
+
+});
+
+/* =========================
+FLOATING QUOTES
+========================= */
+
+gsap.to(".q1",{
+
+scrollTrigger:{
+trigger:".floating-quotes",
+start:"top center",
+end:"bottom center",
+scrub:1
+},
+
+y:-80,
+opacity:1
+
+});
+
+gsap.to(".q2",{
+
+scrollTrigger:{
+trigger:".floating-quotes",
+start:"top center",
+end:"bottom center",
+scrub:1
+},
+
+y:60,
+opacity:1
+
+});
+
+gsap.to(".q3",{
+
+scrollTrigger:{
+trigger:".floating-quotes",
+start:"top center",
+end:"bottom center",
+scrub:1
+},
+
+scale:1.1,
+opacity:1
+
+});
+
+/* =========================
+IMAGE PARALLAX
+========================= */
+
+gsap.utils.toArray(".memory-image img")
+.forEach((img)=>{
+
+gsap.to(img,{
+
+scrollTrigger:{
+trigger:img,
+scrub:1
+},
+
+y:80,
+scale:1.12
+
+});
+
+});
+
+/* =========================
+SCENE FADE
+========================= */
+
+gsap.utils.toArray("section")
+.forEach((section)=>{
+
+gsap.from(section,{
+
+scrollTrigger:{
+trigger:section,
+start:"top 90%"
+},
+
+opacity:0,
+duration:1.5
+
+});
+
+});
+
+/* =========================
+ENDING ROSE
+========================= */
+
+gsap.to(".end-rose",{
+
+scrollTrigger:{
+trigger:"#ending",
+start:"top center",
+scrub:1
+},
+
+scale:1.5,
+opacity:.3
+
+});
+
+/* =========================
+CINEMATIC OVERLAY
+========================= */
+
+gsap.to(".transition-overlay",{
+
+scrollTrigger:{
+trigger:"#ending",
+start:"top bottom",
+end:"bottom bottom",
+scrub:1
+},
+
+opacity:1
+
+});
+
+/* =========================
+ROSE AURA MOTION
+========================= */
+
+gsap.to(".rose-aura",{
+
+scrollTrigger:{
+scrub:1
+},
+
+y:300,
+x:120
+
+});
+
+/* =========================
+SMOOTH SECTION DEPTH
+========================= */
+
+gsap.utils.toArray(".scene")
+.forEach((scene)=>{
+
+gsap.to(scene,{
+
+scrollTrigger:{
+trigger:scene,
+scrub:1
+},
+
+y:-40
+
+});
+
+});
+
+/* =========================
+SECRET CINEMATIC TOUCH
+========================= */
+
+const cinematicTexts =
+document.querySelectorAll(
+".memory-title,.big-quote,.end-title"
+);
+
+cinematicTexts.forEach((text)=>{
+
+gsap.from(text,{
+
+scrollTrigger:{
+trigger:text,
+start:"top 80%"
+},
+
+letterSpacing:"12px",
+opacity:0,
+duration:2.2,
+ease:"power3.out"
+
+});
+
+});
+
+/* =========================
+AMBIENT BREATH EFFECT
+========================= */
+
+gsap.to("body",{
+
+filter:"brightness(1.02)",
+
+repeat:-1,
+yoyo:true,
+
+duration:4,
+ease:"sine.inOut"
+
+});
+
+/* =========================
+FINAL FADE EXPERIENCE
+========================= */
+
+ScrollTrigger.create({
+
+trigger:"#ending",
+
+start:"bottom bottom",
+
+onEnter:()=>{
+
+gsap.to("body",{
+
+background:"#050507",
+duration:3
+
+});
+
+}
+
+});
+
+</script>
+
+</body>
+</html>
+
+<!-- =========================
+ADVANCED CINEMATIC SYSTEM
+ADD BEFORE </body>
+========================= -->
+
+<style>
+
+/* =========================
+LIVE ROSE LINES
+========================= */
+
+.rose-lines{
+
+position:fixed;
+
+inset:0;
+
+pointer-events:none;
+
+z-index:0;
+
+opacity:.18;
+}
+
+.rose-lines svg{
+
+width:100%;
+height:100%;
+}
+
+/* =========================
+FILM GRAIN MOTION
+========================= */
+
+.film-grain{
+
+position:fixed;
+
+inset:-50%;
+
+background-image:
+url("https://grainy-gradients.vercel.app/noise.svg");
+
+opacity:.03;
+
+animation:
+grainMove 8s steps(10) infinite;
+
+pointer-events:none;
+
+z-index:2;
+}
+
+@keyframes grainMove{
+
+0%{
+transform:translate(0,0);
+}
+
+25%{
+transform:translate(5%,10%);
+}
+
+50%{
+transform:translate(-10%,5%);
+}
+
+75%{
+transform:translate(8%,-6%);
+}
+
+100%{
+transform:translate(0,0);
+}
+
+}
+
+/* =========================
+DEPTH LAYERS
+========================= */
+
+.depth-layer{
+
+position:fixed;
+
+inset:0;
+
+pointer-events:none;
+
+z-index:-3;
+}
+
+.depth-circle{
+
+position:absolute;
+
+border-radius:50%;
+
+filter:blur(120px);
+
+opacity:.08;
+}
+
+.depth-one{
+
+width:700px;
+height:700px;
+
+background:#6c3ea1;
+
+top:-20%;
+left:-20%;
+}
+
+.depth-two{
+
+width:600px;
+height:600px;
+
+background:#2f1b47;
+
+bottom:-20%;
+right:-10%;
+}
+
+/* =========================
+FLOATING IMAGE SHADOW
+========================= */
+
+.memory-image{
+
+box-shadow:
+
+0 20px 60px
+rgba(0,0,0,.45),
+
+0 0 0 1px
+rgba(255,255,255,.04),
+
+0 0 80px
+rgba(214,179,106,.04);
+
+}
+
+/* =========================
+LIGHT SWEEP
+========================= */
+
+.light-sweep{
+
+position:absolute;
+
+top:0;
+left:-120%;
+
+width:60%;
+height:100%;
+
+background:
+linear-gradient(
+90deg,
+transparent,
+rgba(255,255,255,.06),
+transparent
+);
+
+transform:skewX(-20deg);
+
+pointer-events:none;
+}
+
+.memory-image:hover .light-sweep{
+
+animation:
+sweep 2s ease;
+}
+
+@keyframes sweep{
+
+0%{
+left:-120%;
+}
+
+100%{
+left:160%;
+}
+
+}
+
+/* =========================
+PREMIUM BUTTON
+========================= */
+
+.enter-button{
+
+margin-top:22px;
+
+width:100%;
+height:56px;
+
+border:none;
+
+border-radius:18px;
+
+background:
+linear-gradient(
+135deg,
+rgba(214,179,106,.18),
+rgba(255,255,255,.03)
+);
+
+color:white;
+
+font-size:12px;
+
+letter-spacing:4px;
+
+text-transform:uppercase;
+
+cursor:pointer;
+
+transition:.5s ease;
+
+backdrop-filter:blur(20px);
+
+border:
+1px solid
+rgba(255,255,255,.08);
+}
+
+.enter-button:hover{
+
+transform:
+translateY(-3px);
+
+box-shadow:
+0 10px 40px
+rgba(214,179,106,.12);
+
+}
+
+/* =========================
+AMBIENT LIGHTS
+========================= */
+
+.ambient-light{
+
+position:absolute;
+
+border-radius:50%;
+
+filter:blur(100px);
+
+opacity:.08;
+
+pointer-events:none;
+}
+
+.light-left{
+
+width:500px;
+height:500px;
+
+background:#8b5cf6;
+
+top:20%;
+left:-200px;
+}
+
+.light-right{
+
+width:400px;
+height:400px;
+
+background:#d6b36a;
+
+bottom:10%;
+right:-150px;
+}
+
+/* =========================
+SCROLL INDICATOR
+========================= */
+
+.scroll-indicator{
+
+position:absolute;
+
+bottom:40px;
+left:50%;
+
+transform:translateX(-50%);
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+gap:14px;
+
+opacity:.5;
+}
+
+.scroll-line{
+
+width:1px;
+height:60px;
+
+background:
+linear-gradient(
+to bottom,
+rgba(255,255,255,.5),
+transparent
+);
+
+animation:
+scrollLine 2s infinite;
+}
+
+@keyframes scrollLine{
+
+0%{
+opacity:0;
+transform:translateY(-10px);
+}
+
+50%{
+opacity:1;
+}
+
+100%{
+opacity:0;
+transform:translateY(10px);
+}
+
+}
+
+.scroll-text{
+
+font-size:10px;
+
+letter-spacing:5px;
+
+text-transform:uppercase;
+
+}
+
+/* =========================
+SOFT FADE MASK
+========================= */
+
+.fade-mask-top{
+
+position:absolute;
+
+top:0;
+left:0;
+
+width:100%;
+height:180px;
+
+background:
+linear-gradient(
+to bottom,
+#08070c,
+transparent
+);
+
+pointer-events:none;
+
+z-index:10;
+}
+
+.fade-mask-bottom{
+
+position:absolute;
+
+bottom:0;
+left:0;
+
+width:100%;
+height:180px;
+
+background:
+linear-gradient(
+to top,
+#08070c,
+transparent
+);
+
+pointer-events:none;
+
+z-index:10;
+}
+
+</style>
+
+<!-- =========================
+EXTRA ATMOSPHERE
+========================= -->
+
+<div class="film-grain"></div>
+
+<div class="depth-layer">
+
+<div class="depth-circle depth-one"></div>
+
+<div class="depth-circle depth-two"></div>
+
+</div>
+
+<!-- =========================
+ROSE SVG LINES
+========================= -->
+
+<div class="rose-lines">
+
+<svg viewBox="0 0 1440 900"
+fill="none">
+
+<path
+d="
+M720 200
+C 850 180 930 300 870 420
+C 820 520 700 550 650 480
+C 580 390 650 250 720 200
+"
+
+stroke="rgba(214,179,106,.22)"
+stroke-width="1.2"
+stroke-linecap="round"
+class="rose-path"
+/>
+
+<path
+d="
+M710 260
+C 760 320 770 390 720 450
+"
+
+stroke="rgba(255,255,255,.12)"
+stroke-width="1"
+stroke-linecap="round"
+class="rose-path"
+/>
+
+</svg>
+
+</div>
+
+<script>
+
+/* =========================
+DRAWING ROSE
+========================= */
+
+const rosePaths =
+document.querySelectorAll(".rose-path");
+
+rosePaths.forEach((path)=>{
+
+const length =
+path.getTotalLength();
+
+path.style.strokeDasharray =
+length;
+
+path.style.strokeDashoffset =
+length;
+
+gsap.to(path,{
+
+strokeDashoffset:0,
+
+duration:4,
+
+ease:"power2.inOut",
+
+repeat:-1,
+
+yoyo:true
+
+});
+
+});
+
+/* =========================
+PASSWORD BUTTON
+========================= */
+
+const gateBox =
+document.querySelector(".gate-box");
+
+const button =
+document.createElement("button");
+
+button.innerText =
+"Enter Universe";
+
+button.classList.add("enter-button");
+
+gateBox.appendChild(button);
+
+button.addEventListener("click",()=>{
+
+if(input.value === "199"){
+
+gsap.to("#gate",{
+
+opacity:0,
+y:-80,
+duration:2,
+ease:"power4.inOut",
+pointerEvents:"none"
+
+});
+
+}
+
+});
+
+/* =========================
+SCROLL ATMOSPHERE
+========================= */
+
+ScrollTrigger.create({
+
+trigger:"#hero",
+
+start:"top top",
+
+end:"bottom top",
+
+scrub:1,
+
+onUpdate:(self)=>{
+
+gsap.to(".fog-1",{
+
+y:self.progress * 120
+
+});
+
+gsap.to(".fog-2",{
+
+y:self.progress * -120
+
+});
+
+}
+
+});
+
+/* =========================
+MEMORY DEPTH EFFECT
+========================= */
+
+gsap.utils.toArray(".memory")
+.forEach((memory,i)=>{
+
+gsap.to(memory,{
+
+scrollTrigger:{
+trigger:memory,
+scrub:1
+},
+
+y:i % 2 === 0 ? -40 : 40
+
+});
+
+});
+
+/* =========================
+QUOTE FLOATING MOTION
+========================= */
+
+gsap.to(".floating-quote",{
+
+y:-30,
+
+repeat:-1,
+yoyo:true,
+
+duration:4,
+
+stagger:1.2,
+
+ease:"sine.inOut"
+
+});
+
+/* =========================
+ENDING ATMOSPHERE
+========================= */
+
+gsap.to(".end-title",{
+
+textShadow:
+"0 0 30px rgba(214,179,106,.2)",
+
+repeat:-1,
+yoyo:true,
+
+duration:4
+
+});
+
+/* =========================
+SCROLL INDICATOR
+========================= */
+
+const indicator =
+document.createElement("div");
+
+indicator.classList.add(
+"scroll-indicator"
+);
+
+indicator.innerHTML = `
+
+<div class="scroll-line"></div>
+
+<div class="scroll-text">
+Scroll
+</div>
+
+`;
+
+document
+.querySelector("#hero")
+.appendChild(indicator);
+
+/* =========================
+AMBIENT CAMERA FEEL
+========================= */
+
+window.addEventListener("scroll",()=>{
+
+const scrollY =
+window.scrollY;
+
+gsap.to("main",{
+
+y:scrollY * -0.01,
+
+duration:1
+
+});
+
+});
+
+/* =========================
+SOFT INTRO FADE
+========================= */
+
+gsap.from("body",{
+
+opacity:0,
+duration:2.5,
+ease:"power2.out"
+
+});
+
+/* =========================
+CINEMATIC SECTION REVEALS
+========================= */
+
+gsap.utils.toArray("section")
+.forEach((section)=>{
+
+const maskTop =
+document.createElement("div");
+
+maskTop.classList.add(
+"fade-mask-top"
+);
+
+const maskBottom =
+document.createElement("div");
+
+maskBottom.classList.add(
+"fade-mask-bottom"
+);
+
+section.appendChild(maskTop);
+section.appendChild(maskBottom);
+
+});
+
+/* =========================
+MOBILE TOUCH OPTIMIZATION
+========================= */
+
+if(window.innerWidth < 768){
+
+gsap.set(".memory-image",{
+
+height:420
+
+});
+
+gsap.set(".hero-title",{
+
+fontSize:"72px"
+
+});
+
+}
+
+/* =========================
+PREMIUM FINISH
+========================= */
+
+console.clear();
+
+console.log(
+
+"%cMosha Studio",
+"
+color:#d6b36a;
+font-size:28px;
+font-family:serif;
+"
+
+);
+
+console.log(
+
+"%cPrivate universe loaded",
+"
+color:#888;
+font-size:12px;
+letter-spacing:3px;
+"
+
+);
+
+</script>
+
+<!-- =========================
+ADVANCED MEMORY ENGINE
+ADD BEFORE </body>
+========================= -->
+
+<style>
+
+/* =========================
+MEMORY STACK
+========================= */
+
+.memory-stack{
+
+position:relative;
+
+width:100%;
+
+display:flex;
+
+flex-direction:column;
+
+gap:300px;
+
+padding:240px 0;
+}
+
+.memory-layer{
+
+position:relative;
+
+display:grid;
+
+grid-template-columns:
+1fr 1fr;
+
+gap:100px;
+
+align-items:center;
+}
+
+.memory-visual{
+
+position:relative;
+
+height:760px;
+
+border-radius:40px;
+
+overflow:hidden;
+
+background:
+rgba(255,255,255,.03);
+
+border:
+1px solid
+rgba(255,255,255,.06);
+
+backdrop-filter:
+blur(30px);
+}
+
+.memory-visual img{
+
+width:100%;
+height:100%;
+
+object-fit:cover;
+
+filter:
+brightness(.82)
+contrast(1.05)
+saturate(.92);
+
+transform:scale(1.06);
+
+transition:10s ease;
+}
+
+.memory-layer:hover img{
+
+transform:
+scale(1.14);
+
+}
+
+.memory-copy{
+
+position:relative;
+
+z-index:5;
+}
+
+.memory-index{
+
+font-size:11px;
+
+letter-spacing:6px;
+
+text-transform:uppercase;
+
+color:
+rgba(214,179,106,.65);
+
+margin-bottom:24px;
+}
+
+.memory-heading{
+
+font-family:
+'Cormorant Garamond',
+serif;
+
+font-size:
+clamp(48px,6vw,110px);
+
+line-height:.92;
+
+font-weight:300;
+
+margin-bottom:32px;
+}
+
+.memory-description{
+
+max-width:520px;
+
+line-height:2.1;
+
+font-size:14px;
+
+color:rgba(255,255,255,.55);
+}
+
+/* =========================
+VERTICAL LIGHT LINE
+========================= */
+
+.vertical-light{
+
+position:absolute;
+
+top:0;
+left:50%;
+
+width:1px;
+height:100%;
+
+background:
+linear-gradient(
+to bottom,
+transparent,
+rgba(214,179,106,.12),
+transparent
+);
+
+transform:
+translateX(-50%);
+}
+
+/* =========================
+FLOAT CARDS
+========================= */
+
+.float-card{
+
+position:absolute;
+
+padding:
+18px 24px;
+
+border-radius:22px;
+
+background:
+rgba(255,255,255,.04);
+
+backdrop-filter:
+blur(20px);
+
+border:
+1px solid
+rgba(255,255,255,.06);
+
+font-size:12px;
+
+letter-spacing:2px;
+
+text-transform:uppercase;
+
+color:
+rgba(255,255,255,.72);
+
+box-shadow:
+0 10px 40px
+rgba(0,0,0,.25);
+}
+
+.card-a{
+
+top:8%;
+left:-40px;
+}
+
+.card-b{
+
+bottom:12%;
+right:-30px;
+}
+
+/* =========================
+MEMORY LIGHT
+========================= */
+
+.memory-light{
+
+position:absolute;
+
+width:340px;
+height:340px;
+
+border-radius:50%;
+
+background:
+radial-gradient(circle,
+rgba(214,179,106,.08),
+transparent 70%);
+
+filter:blur(70px);
+
+pointer-events:none;
+}
+
+.memory-light.left{
+
+top:20%;
+left:-120px;
+}
+
+.memory-light.right{
+
+bottom:10%;
+right:-120px;
+}
+
+/* =========================
+SECTION DIVIDER
+========================= */
+
+.section-divider{
+
+position:relative;
+
+width:100%;
+height:200px;
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+}
+
+.divider-line{
+
+width:1px;
+height:120px;
+
+background:
+linear-gradient(
+to bottom,
+transparent,
+rgba(255,255,255,.18),
+transparent
+);
+
+}
+
+.divider-dot{
+
+position:absolute;
+
+width:10px;
+height:10px;
+
+border-radius:50%;
+
+background:var(--gold);
+
+box-shadow:
+0 0 30px
+rgba(214,179,106,.8);
+
+}
+
+/* =========================
+CINEMATIC TEXT SHADOW
+========================= */
+
+.memory-heading,
+.big-quote,
+.end-title{
+
+text-shadow:
+0 0 40px
+rgba(255,255,255,.03);
+
+}
+
+/* =========================
+ULTRA MOBILE
+========================= */
+
+@media(max-width:900px){
+
+.memory-layer{
+
+grid-template-columns:1fr;
+
+gap:60px;
+}
+
+.memory-visual{
+
+height:520px;
+}
+
+.vertical-light{
+display:none;
+}
+
+.memory-heading{
+
+font-size:64px;
+}
+
+.float-card{
+
+display:none;
+}
+
+}
+
+</style>
+
+<!-- =========================
+DIVIDER
+========================= -->
+
+<div class="section-divider">
+
+<div class="divider-line"></div>
+
+<div class="divider-dot"></div>
+
+</div>
+
+<!-- =========================
+ADVANCED MEMORY STACK
+========================= -->
+
+<section class="scene">
+
+<div class="memory-stack">
+
+<div class="vertical-light"></div>
+
+<!-- MEMORY 5 -->
+
+<div class="memory-layer">
+
+<div class="memory-visual">
+
+<div class="memory-light left"></div>
+
+<div class="float-card card-a">
+first universe
+</div>
+
+<img src="https://i.ibb.co/gbs32ptN/d0631a3233648c422ebff973c53b2706.jpg">
+
+</div>
+
+<div class="memory-copy">
+
+<div class="memory-index">
+Memory 05
+</div>
+
+<h2 class="memory-heading">
+
+The world
+became quieter
+around us
+
+</h2>
+
+<p class="memory-description">
+
+There is a strange peace
+that appears
+when two souls stop pretending
+
+when comfort becomes natural
+
+when silence no longer feels empty
+
+</p>
+
+</div>
+
+</div>
+
+<!-- MEMORY 6 -->
+
+<div class="memory-layer">
+
+<div class="memory-copy">
+
+<div class="memory-index">
+Memory 06
+</div>
+
+<h2 class="memory-heading">
+
+Love moves
+slowly
+but deeply
+
+</h2>
+
+<p class="memory-description">
+
+Not every love story
+arrives loudly
+
+some arrive softly
+
+like rain at night
+
+like light under a closed door
+
+</p>
+
+</div>
+
+<div class="memory-visual">
+
+<div class="memory-light right"></div>
+
+<div class="float-card card-b">
+written by destiny
+</div>
+
+<img src="https://i.ibb.co/KxGHtXrL/96bd92f37a6e479591e9558041c5b3fc.jpg">
+
+</div>
+
+</div>
+
+<!-- MEMORY 7 -->
+
+<div class="memory-layer">
+
+<div class="memory-visual">
+
+<div class="memory-light left"></div>
+
+<img src="https://i.ibb.co/zVrbDjZ9/c21a6b29221169dd60781b0a2238a5fd.jpg">
+
+</div>
+
+<div class="memory-copy">
+
+<div class="memory-index">
+Memory 07
+</div>
+
+<h2 class="memory-heading">
+
+You were never
+a coincidence
+
+</h2>
+
+<p class="memory-description">
+
+Some meetings feel accidental
+
+but deep inside
+they feel ancient
+
+like something
+that was always supposed to happen
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<script>
+
+/* =========================
+MEMORY STACK REVEAL
+========================= */
+
+gsap.utils.toArray(".memory-layer")
+.forEach((layer,index)=>{
+
+gsap.from(layer,{
+
+scrollTrigger:{
+trigger:layer,
+start:"top 82%"
+},
+
+opacity:0,
+y:140,
+duration:2,
+ease:"power4.out"
+
+});
+
+});
+
+/* =========================
+MEMORY IMAGE DEPTH
+========================= */
+
+gsap.utils.toArray(".memory-visual img")
+.forEach((img)=>{
+
+gsap.to(img,{
+
+scrollTrigger:{
+trigger:img,
+scrub:1
+},
+
+y:120,
+scale:1.15,
+ease:"none"
+
+});
+
+});
+
+/* =========================
+FLOAT CARDS MOTION
+========================= */
+
+gsap.utils.toArray(".float-card")
+.forEach((card)=>{
+
+gsap.to(card,{
+
+y:-18,
+
+repeat:-1,
+yoyo:true,
+
+duration:3,
+
+ease:"sine.inOut"
+
+});
+
+});
+
+/* =========================
+DIVIDER GLOW
+========================= */
+
+gsap.to(".divider-dot",{
+
+scale:1.4,
+
+repeat:-1,
+yoyo:true,
+
+duration:2.2,
+
+ease:"sine.inOut"
+
+});
+
+/* =========================
+VERTICAL LIGHT PARALLAX
+========================= */
+
+gsap.to(".vertical-light",{
+
+scrollTrigger:{
+trigger:".memory-stack",
+scrub:1
+},
+
+y:-120
+
+});
+
+/* =========================
+MEMORY LIGHT PULSE
+========================= */
+
+gsap.utils.toArray(".memory-light")
+.forEach((light)=>{
+
+gsap.to(light,{
+
+scale:1.2,
+
+opacity:.16,
+
+repeat:-1,
+yoyo:true,
+
+duration:5,
+
+ease:"sine.inOut"
+
+});
+
+});
+
+/* =========================
+ULTRA CINEMATIC CAMERA
+========================= */
+
+gsap.to(".memory-stack",{
+
+scrollTrigger:{
+trigger:".memory-stack",
+scrub:1
+},
+
+y:-80
+
+});
+
+/* =========================
+SOFT SECTION BREATH
+========================= */
+
+gsap.utils.toArray(".scene")
+.forEach((scene)=>{
+
+gsap.to(scene,{
+
+scale:1.01,
+
+repeat:-1,
+yoyo:true,
+
+duration:8,
+
+ease:"sine.inOut"
+
+});
+
+});
+
+/* =========================
+PREMIUM MEMORY SHADOWS
+========================= */
+
+gsap.utils.toArray(".memory-visual")
+.forEach((box)=>{
+
+box.addEventListener("mousemove",(e)=>{
+
+const rect =
+box.getBoundingClientRect();
+
+const x =
+e.clientX - rect.left;
+
+const y =
+e.clientY - rect.top;
+
+const rotateY =
+((x / rect.width)-0.5) * 8;
+
+const rotateX =
+((y / rect.height)-0.5) * -8;
+
+gsap.to(box,{
+
+rotateY,
+rotateX,
+
+transformPerspective:1000,
+
+duration:.8,
+
+ease:"power3.out"
+
+});
+
+});
+
+box.addEventListener("mouseleave",()=>{
+
+gsap.to(box,{
+
+rotateY:0,
+rotateX:0,
+
+duration:1.2,
+
+ease:"power3.out"
+
+});
+
+});
+
+});
+
+</script>
+
+<!-- =========================
+ULTIMATE HERO CINEMATIC
+PUT AFTER HERO SECTION
+========================= -->
+
+<style>
+
+/* =========================
+CINEMATIC HERO EXPANSION
+========================= */
+
+.hero-background{
+
+position:absolute;
+
+inset:0;
+
+overflow:hidden;
+
+z-index:-2;
+}
+
+.hero-gradient{
+
+position:absolute;
+
+width:1200px;
+height:1200px;
+
+border-radius:50%;
+
+background:
+radial-gradient(circle,
+rgba(139,92,246,.12),
+transparent 70%);
+
+top:-30%;
+left:50%;
+
+transform:
+translateX(-50%);
+
+filter:blur(120px);
+}
+
+.hero-stars{
+
+position:absolute;
+
+inset:0;
+}
+
+.star{
+
+position:absolute;
+
+width:2px;
+height:2px;
+
+border-radius:50%;
+
+background:white;
+
+opacity:.4;
+
+animation:
+starBlink infinite alternate;
+}
+
+@keyframes starBlink{
+
+0%{
+opacity:.1;
+transform:scale(1);
+}
+
+100%{
+opacity:.8;
+transform:scale(1.8);
+}
+
+}
+
+/* =========================
+HERO FRAME
+========================= */
+
+.hero-frame{
+
+position:absolute;
+
+inset:40px;
+
+border:
+1px solid
+rgba(255,255,255,.04);
+
+pointer-events:none;
+
+border-radius:40px;
+}
+
+/* =========================
+HERO LIGHT BEAM
+========================= */
+
+.hero-beam{
+
+position:absolute;
+
+top:-20%;
+left:50%;
+
+width:2px;
+height:140%;
+
+background:
+linear-gradient(
+to bottom,
+transparent,
+rgba(214,179,106,.15),
+transparent
+);
+
+filter:blur(2px);
+
+transform:
+translateX(-50%);
+}
+
+/* =========================
+HERO NAME EFFECT
+========================= */
+
+.hero-title span{
+
+display:block;
+
+overflow:hidden;
+}
+
+.hero-title span div{
+
+display:inline-block;
+}
+
+/* =========================
+FLOATING DUST
+========================= */
+
+.hero-dust{
+
+position:absolute;
+
+inset:0;
+
+pointer-events:none;
+}
+
+.dust{
+
+position:absolute;
+
+width:2px;
+height:2px;
+
+border-radius:50%;
+
+background:
+rgba(255,255,255,.2);
+
+filter:blur(1px);
+
+animation:
+dustMove linear infinite;
+}
+
+@keyframes dustMove{
+
+0%{
+transform:
+translateY(0)
+translateX(0);
+opacity:0;
+}
+
+20%{
+opacity:1;
+}
+
+100%{
+transform:
+translateY(-300px)
+translateX(40px);
+opacity:0;
+}
+
+}
+
+/* =========================
+LIVE CLOCK FEEL
+========================= */
+
+.live-time{
+
+position:absolute;
+
+top:40px;
+right:50px;
+
+font-size:11px;
+
+letter-spacing:4px;
+
+text-transform:uppercase;
+
+color:
+rgba(255,255,255,.35);
+
+}
+
+/* =========================
+PRIVATE LABEL
+========================= */
+
+.private-label{
+
+position:absolute;
+
+left:50px;
+bottom:50px;
+
+font-size:11px;
+
+letter-spacing:5px;
+
+text-transform:uppercase;
+
+color:
+rgba(255,255,255,.3);
+
+}
+
+/* =========================
+EMOTIONAL OVERLAY
+========================= */
+
+.emotion-overlay{
+
+position:absolute;
+
+inset:0;
+
+background:
+radial-gradient(circle at center,
+transparent,
+rgba(8,7,12,.45));
+
+mix-blend-mode:screen;
+
+pointer-events:none;
+}
+
+/* =========================
+LUXURY SHADOWS
+========================= */
+
+.hero-title{
+
+text-shadow:
+
+0 0 30px
+rgba(255,255,255,.05),
+
+0 0 100px
+rgba(214,179,106,.08);
+
+}
+
+</style>
+
+<!-- =========================
+ADVANCED HERO ELEMENTS
+========================= -->
+
+<div class="hero-background">
+
+<div class="hero-gradient"></div>
+
+<div class="hero-stars" id="heroStars"></div>
+
+<div class="hero-dust" id="heroDust"></div>
+
+<div class="hero-beam"></div>
+
+<div class="emotion-overlay"></div>
+
+</div>
+
+<div class="hero-frame"></div>
+
+<div class="live-time" id="liveClock">
+00:00 AM
+</div>
+
+<div class="private-label">
+private universe
+</div>
+
+<script>
+
+/* =========================
+HERO TITLE SPLIT
+========================= */
+
+const heroTitle =
+document.querySelector(".hero-title");
+
+heroTitle.innerHTML = `
+
+<span><div>Salim</div></span>
+
+<span><div>&</div></span>
+
+<span><div>Amira</div></span>
+
+`;
+
+gsap.from(
+".hero-title span div",
+{
+
+y:220,
+
+opacity:0,
+
+stagger:.18,
+
+duration:2.4,
+
+ease:"power4.out"
+
+}
+);
+
+/* =========================
+CREATE STARS
+========================= */
+
+const stars =
+document.getElementById("heroStars");
+
+for(let i=0;i<120;i++){
+
+const star =
+document.createElement("span");
+
+star.classList.add("star");
+
+star.style.left =
+Math.random()*100 + "%";
+
+star.style.top =
+Math.random()*100 + "%";
+
+star.style.animationDuration =
+(2 + Math.random()*6) + "s";
+
+star.style.animationDelay =
+Math.random()*4 + "s";
+
+stars.appendChild(star);
+
+}
+
+/* =========================
+CREATE DUST
+========================= */
+
+const dustWrap =
+document.getElementById("heroDust");
+
+for(let i=0;i<80;i++){
+
+const dust =
+document.createElement("span");
+
+dust.classList.add("dust");
+
+dust.style.left =
+Math.random()*100 + "%";
+
+dust.style.bottom =
+Math.random()*100 + "px";
+
+dust.style.animationDuration =
+(8 + Math.random()*10) + "s";
+
+dust.style.animationDelay =
+Math.random()*8 + "s";
+
+dustWrap.appendChild(dust);
+
+}
+
+/* =========================
+LIVE CLOCK
+========================= */
+
+function updateClock(){
+
+const clock =
+document.getElementById("liveClock");
+
+const now = new Date();
+
+let h =
+now.getHours();
+
+let m =
+now.getMinutes();
+
+let ampm =
+h >= 12 ? "PM" : "AM";
+
+h = h % 12 || 12;
+
+m = m < 10 ? "0"+m : m;
+
+clock.innerHTML =
+`${h}:${m} ${ampm}`;
+
+}
+
+setInterval(updateClock,1000);
+
+updateClock();
+
+/* =========================
+HERO PARALLAX
+========================= */
+
+gsap.to(".hero-gradient",{
+
+scrollTrigger:{
+trigger:"#hero",
+scrub:1
+},
+
+y:180,
+scale:1.2
+
+});
+
+gsap.to(".hero-beam",{
+
+scrollTrigger:{
+trigger:"#hero",
+scrub:1
+},
+
+opacity:.2,
+height:"170%"
+
+});
+
+/* =========================
+TITLE FLOAT
+========================= */
+
+gsap.to(".hero-title",{
+
+y:-30,
+
+repeat:-1,
+yoyo:true,
+
+duration:5,
+
+ease:"sine.inOut"
+
+});
+
+/* =========================
+SUBTITLE GLOW
+========================= */
+
+gsap.to(".hero-sub",{
+
+textShadow:
+"0 0 20px rgba(214,179,106,.25)",
+
+repeat:-1,
+yoyo:true,
+
+duration:3
+
+});
+
+/* =========================
+FRAME MOTION
+========================= */
+
+window.addEventListener("mousemove",(e)=>{
+
+const x =
+(e.clientX / window.innerWidth - .5) * 20;
+
+const y =
+(e.clientY / window.innerHeight - .5) * 20;
+
+gsap.to(".hero-frame",{
+
+x,
+y,
+
+duration:2,
+
+ease:"power3.out"
+
+});
+
+});
+
+/* =========================
+CINEMATIC INTRO ZOOM
+========================= */
+
+gsap.from("#hero",{
+
+scale:1.08,
+
+duration:3,
+
+ease:"power4.out"
+
+});
+
+/* =========================
+SOFT HERO DARKEN
+========================= */
+
+gsap.to("#hero",{
+
+scrollTrigger:{
+trigger:"#hero",
+start:"top top",
+end:"bottom top",
+scrub:1
+},
+
+opacity:.6
+
+});
+
+/* =========================
+PRIVATE UNIVERSE FEEL
+========================= */
+
+gsap.to(".private-label",{
+
+letterSpacing:"10px",
+
+repeat:-1,
+yoyo:true,
+
+duration:4,
+
+ease:"sine.inOut"
+
+});
+
+/* =========================
+GOLD ATMOSPHERE
+========================= */
+
+gsap.to(".hero-gradient",{
+
+filter:
+"blur(160px)",
+
+repeat:-1,
+yoyo:true,
+
+duration:8,
+
+ease:"sine.inOut"
+
+});
+
+</script>
+
+<!-- =========================
+ULTIMATE LOADING EXPERIENCE
+REPLACE OLD LOADER SECTION
+========================= -->
+
+<style>
+
+/* =========================
+FULLSCREEN LOADER
+========================= */
+
+#loader{
+
+position:fixed;
+
+inset:0;
+
+background:
+radial-gradient(circle at center,
+#15111d,
+#08070c 70%);
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+overflow:hidden;
+
+z-index:999999;
+}
+
+/* =========================
+LOADER BACK LIGHTS
+========================= */
+
+.loader-bg{
+
+position:absolute;
+
+inset:0;
+
+overflow:hidden;
+}
+
+.loader-light{
+
+position:absolute;
+
+border-radius:50%;
+
+filter:blur(120px);
+
+opacity:.12;
+}
+
+.loader-light.one{
+
+width:600px;
+height:600px;
+
+background:#7c4bb1;
+
+top:-20%;
+left:-10%;
+
+animation:
+loaderFloatOne 10s ease-in-out infinite;
+}
+
+.loader-light.two{
+
+width:500px;
+height:500px;
+
+background:#d6b36a;
+
+bottom:-20%;
+right:-10%;
+
+animation:
+loaderFloatTwo 12s ease-in-out infinite;
+}
+
+@keyframes loaderFloatOne{
+
+0%{
+transform:translate(0,0);
+}
+
+50%{
+transform:translate(60px,40px);
+}
+
+100%{
+transform:translate(0,0);
+}
+
+}
+
+@keyframes loaderFloatTwo{
+
+0%{
+transform:translate(0,0);
+}
+
+50%{
+transform:translate(-40px,-60px);
+}
+
+100%{
+transform:translate(0,0);
+}
+
+}
+
+/* =========================
+LOADER CENTER
+========================= */
+
+.loader-center{
+
+position:relative;
+
+z-index:4;
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+}
+
+/* =========================
+ROSE SVG
+========================= */
+
+.loader-rose{
+
+width:180px;
+height:180px;
+
+margin-bottom:40px;
+
+opacity:.9;
+}
+
+.loader-rose path{
+
+stroke:
+rgba(214,179,106,.9);
+
+stroke-width:1.2;
+
+fill:none;
+
+stroke-linecap:round;
+}
+
+/* =========================
+TITLE
+========================= */
+
+.loader-main{
+
+font-family:
+'Cormorant Garamond',
+serif;
+
+font-size:
+clamp(42px,5vw,70px);
+
+letter-spacing:6px;
+
+font-weight:300;
+
+margin-bottom:18px;
+
+opacity:0;
+}
+
+.loader-text{
+
+font-size:11px;
+
+letter-spacing:6px;
+
+text-transform:uppercase;
+
+color:
+rgba(255,255,255,.45);
+
+opacity:0;
+}
+
+/* =========================
+LOADER PARTICLES
+========================= */
+
+.loader-particles{
+
+position:absolute;
+
+inset:0;
+}
+
+.loader-p{
+
+position:absolute;
+
+width:3px;
+height:3px;
+
+border-radius:50%;
+
+background:
+rgba(255,255,255,.2);
+
+animation:
+loaderParticle linear infinite;
+}
+
+@keyframes loaderParticle{
+
+0%{
+transform:
+translateY(0)
+scale(.5);
+
+opacity:0;
+}
+
+20%{
+opacity:1;
+}
+
+100%{
+transform:
+translateY(-600px)
+scale(1.5);
+
+opacity:0;
+}
+
+}
+
+/* =========================
+FADE OUT
+========================= */
+
+.loader-fade{
+
+position:absolute;
+
+inset:0;
+
+background:#08070c;
+
+opacity:0;
+
+pointer-events:none;
+}
+
+</style>
+
+<!-- =========================
+NEW LOADER
+========================= -->
+
+<div id="loader">
+
+<div class="loader-bg">
+
+<div class="loader-light one"></div>
+
+<div class="loader-light two"></div>
+
+<div class="loader-particles"
+id="loaderParticles"></div>
+
+</div>
+
+<div class="loader-center">
+
+<svg
+class="loader-rose"
+viewBox="0 0 300 300">
+
+<path
+class="roseDraw"
+d="
+M150 90
+C 210 70 250 120 225 180
+C 205 230 145 240 120 200
+C 90 150 115 100 150 90
+"
+/>
+
+<path
+class="roseDraw"
+d="
+M145 120
+C 165 145 168 175 150 200
+"
+/>
+
+<path
+class="roseDraw"
+d="
+M150 200
+C 145 230 140 250 135 280
+"
+/>
+
+</svg>
+
+<div class="loader-main">
+Mosha Studio
+</div>
+
+<div class="loader-text">
+Private universe for two souls
+</div>
+
+</div>
+
+<div class="loader-fade"></div>
+
+</div>
+
+<script>
+
+/* =========================
+LOADER PARTICLES
+========================= */
+
+const loaderParticles =
+document.getElementById(
+"loaderParticles"
+);
+
+for(let i=0;i<80;i++){
+
+const p =
+document.createElement("span");
+
+p.classList.add("loader-p");
+
+p.style.left =
+Math.random()*100 + "%";
+
+p.style.bottom =
+Math.random()*100 + "px";
+
+p.style.animationDuration =
+(6 + Math.random()*8) + "s";
+
+p.style.animationDelay =
+Math.random()*5 + "s";
+
+loaderParticles.appendChild(p);
+
+}
+
+/* =========================
+DRAW ROSE
+========================= */
+
+const roseDraws =
+document.querySelectorAll(
+".roseDraw"
+);
+
+roseDraws.forEach((path)=>{
+
+const length =
+path.getTotalLength();
+
+path.style.strokeDasharray =
+length;
+
+path.style.strokeDashoffset =
+length;
+
+gsap.to(path,{
+
+strokeDashoffset:0,
+
+duration:3,
+
+ease:"power2.inOut"
+
+});
+
+});
+
+/* =========================
+LOADER TIMELINE
+========================= */
+
+const loaderTimeline =
+gsap.timeline();
+
+loaderTimeline
+
+.to(".loader-main",{
+
+opacity:1,
+y:-10,
+
+duration:1.5,
+
+ease:"power4.out"
+
+},"-=1.5")
+
+.to(".loader-text",{
+
+opacity:1,
+
+duration:1.2
+
+},"-=1")
+
+.to(".loader-fade",{
+
+opacity:1,
+
+duration:2,
+
+delay:1.2
+
+})
+
+.to("#loader",{
+
+opacity:0,
+
+pointerEvents:"none",
+
+duration:1.4
+
+},"-=1.4");
+
+/* =========================
+LOADER CAMERA FEEL
+========================= */
+
+window.addEventListener("mousemove",(e)=>{
+
+const x =
+(e.clientX/window.innerWidth - .5) * 30;
+
+const y =
+(e.clientY/window.innerHeight - .5) * 30;
+
+gsap.to(".loader-center",{
+
+x,
+y,
+
+duration:2,
+
+ease:"power3.out"
+
+});
+
+});
+
+/* =========================
+AMBIENT LOADER MOTION
+========================= */
+
+gsap.to(".loader-center",{
+
+y:-20,
+
+repeat:-1,
+yoyo:true,
+
+duration:5,
+
+ease:"sine.inOut"
+
+});
+
+/* =========================
+LOADER LIGHT BREATH
+========================= */
+
+gsap.to(".loader-light",{
+
+scale:1.15,
+
+repeat:-1,
+yoyo:true,
+
+duration:6,
+
+stagger:1,
+
+ease:"sine.inOut"
+
+});
+
+/* =========================
+FINAL INTRO FEEL
+========================= */
+
+gsap.from("main",{
+
+opacity:0,
+scale:1.02,
+
+duration:2.5,
+
+delay:4,
+
+ease:"power3.out"
+
+});
+
+</script>
+
+<!-- =========================
+ULTIMATE PASSWORD GATE
+REPLACE OLD GATE SECTION
+========================= -->
+
+<style>
+
+/* =========================
+PASSWORD SCENE
+========================= */
+
+#gate{
+
+position:relative;
+
+min-height:100vh;
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+overflow:hidden;
+}
+
+/* =========================
+GATE BACKGROUND
+========================= */
+
+.gate-background{
+
+position:absolute;
+
+inset:0;
+
+overflow:hidden;
+}
+
+.gate-fog{
+
+position:absolute;
+
+border-radius:50%;
+
+filter:blur(120px);
+
+opacity:.1;
+}
+
+.gate-fog.one{
+
+width:700px;
+height:700px;
+
+background:#7c4bb1;
+
+top:-25%;
+left:-15%;
+
+animation:
+gateFogOne 18s ease-in-out infinite;
+}
+
+.gate-fog.two{
+
+width:500px;
+height:500px;
+
+background:#d6b36a;
+
+bottom:-20%;
+right:-10%;
+
+animation:
+gateFogTwo 14s ease-in-out infinite;
+}
+
+@keyframes gateFogOne{
+
+0%{
+transform:translate(0,0);
+}
+
+50%{
+transform:translate(60px,80px);
+}
+
+100%{
+transform:translate(0,0);
+}
+
+}
+
+@keyframes gateFogTwo{
+
+0%{
+transform:translate(0,0);
+}
+
+50%{
+transform:translate(-50px,-40px);
+}
+
+100%{
+transform:translate(0,0);
+}
+
+}
+
+/* =========================
+CENTER CARD
+========================= */
+
+.gate-card{
+
+position:relative;
+
+width:min(520px,92vw);
+
+padding:
+70px 50px;
+
+border-radius:40px;
+
+background:
+rgba(255,255,255,.04);
+
+backdrop-filter:
+blur(40px);
+
+border:
+1px solid
+rgba(255,255,255,.06);
+
+overflow:hidden;
+
+z-index:5;
+
+box-shadow:
+
+0 30px 80px
+rgba(0,0,0,.45),
+
+0 0 120px
+rgba(214,179,106,.04);
+}
+
+/* =========================
+CARD LIGHT
+========================= */
+
+.card-light{
+
+position:absolute;
+
+width:240px;
+height:240px;
+
+border-radius:50%;
+
+background:
+radial-gradient(circle,
+rgba(214,179,106,.14),
+transparent 70%);
+
+filter:blur(60px);
+
+top:-80px;
+right:-80px;
+
+pointer-events:none;
+}
+
+/* =========================
+LOCK ICON
+========================= */
+
+.lock-wrap{
+
+display:flex;
+
+justify-content:center;
+
+margin-bottom:34px;
+}
+
+.lock-circle{
+
+width:90px;
+height:90px;
+
+border-radius:50%;
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+background:
+rgba(255,255,255,.03);
+
+border:
+1px solid
+rgba(255,255,255,.06);
+
+box-shadow:
+0 0 50px
+rgba(214,179,106,.08);
+}
+
+.lock-icon{
+
+font-size:28px;
+
+color:
+rgba(214,179,106,.85);
+}
+
+/* =========================
+TEXTS
+========================= */
+
+.gate-heading{
+
+font-family:
+'Cormorant Garamond',
+serif;
+
+font-size:
+clamp(44px,5vw,68px);
+
+font-weight:300;
+
+text-align:center;
+
+margin-bottom:18px;
+}
+
+.gate-description{
+
+font-size:14px;
+
+line-height:2;
+
+text-align:center;
+
+color:
+rgba(255,255,255,.5);
+
+max-width:360px;
+
+margin:
+0 auto 40px;
+}
+
+/* =========================
+INPUT
+========================= */
+
+.input-wrap{
+
+position:relative;
+
+margin-bottom:24px;
+}
+
+.secret-input{
+
+width:100%;
+
+height:64px;
+
+background:
+rgba(255,255,255,.03);
+
+border:
+1px solid
+rgba(255,255,255,.08);
+
+border-radius:20px;
+
+padding:
+0 24px;
+
+outline:none;
+
+color:white;
+
+font-size:13px;
+
+letter-spacing:5px;
+
+text-align:center;
+
+transition:.4s ease;
+}
+
+.secret-input:focus{
+
+border:
+1px solid
+rgba(214,179,106,.4);
+
+box-shadow:
+0 0 40px
+rgba(214,179,106,.08);
+
+}
+
+/* =========================
+ENTER BUTTON
+========================= */
+
+.enter-universe{
+
+width:100%;
+height:64px;
+
+border:none;
+
+border-radius:22px;
+
+cursor:pointer;
+
+background:
+linear-gradient(
+135deg,
+rgba(214,179,106,.18),
+rgba(255,255,255,.04)
+);
+
+color:white;
+
+font-size:11px;
+
+letter-spacing:5px;
+
+text-transform:uppercase;
+
+transition:.5s ease;
+
+border:
+1px solid
+rgba(255,255,255,.06);
+
+backdrop-filter:
+blur(20px);
+}
+
+.enter-universe:hover{
+
+transform:
+translateY(-4px);
+
+box-shadow:
+0 20px 50px
+rgba(214,179,106,.12);
+
+}
+
+/* =========================
+BOTTOM TEXT
+========================= */
+
+.bottom-secret{
+
+margin-top:30px;
+
+text-align:center;
+
+font-size:10px;
+
+letter-spacing:4px;
+
+text-transform:uppercase;
+
+color:
+rgba(255,255,255,.25);
+}
+
+/* =========================
+FLOATING SYMBOLS
+========================= */
+
+.symbol{
+
+position:absolute;
+
+font-family:
+'Cormorant Garamond',
+serif;
+
+font-size:18px;
+
+color:
+rgba(255,255,255,.06);
+
+pointer-events:none;
+}
+
+.s1{
+top:12%;
+left:10%;
+}
+
+.s2{
+top:18%;
+right:14%;
+}
+
+.s3{
+bottom:20%;
+left:18%;
+}
+
+.s4{
+bottom:16%;
+right:20%;
+}
+
+/* =========================
+ACCESS DENIED
+========================= */
+
+.denied{
+
+margin-top:18px;
+
+font-size:11px;
+
+letter-spacing:3px;
+
+text-transform:uppercase;
+
+text-align:center;
+
+color:
+rgba(255,80,80,.7);
+
+opacity:0;
+}
+
+</style>
+
+<!-- =========================
+NEW PASSWORD GATE
+========================= -->
+
+<section id="gate">
+
+<div class="gate-background">
+
+<div class="gate-fog one"></div>
+
+<div class="gate-fog two"></div>
+
+</div>
+
+<div class="symbol s1">✦</div>
+<div class="symbol s2">☾</div>
+<div class="symbol s3">✧</div>
+<div class="symbol s4">∞</div>
+
+<div class="gate-card">
+
+<div class="card-light"></div>
+
+<div class="lock-wrap">
+
+<div class="lock-circle">
+
+<div class="lock-icon">
+✦
+</div>
+
+</div>
+
+</div>
+
+<h2 class="gate-heading">
+
+Enter
+the universe
+
+</h2>
+
+<p class="gate-description">
+
+Some places are not meant
+for everyone
+
+Only souls carrying
+the right memory
+can enter
+
+</p>
+
+<div class="input-wrap">
+
+<input
+type="password"
+id="secretInput"
+class="secret-input"
+placeholder="••••••••"
+/>
+
+</div>
+
+<button
+class="enter-universe"
+id="enterBtn">
+
+Unlock Story
+
+</button>
+
+<div class="denied" id="denied">
+Access denied
+</div>
+
+<div class="bottom-secret">
+
+Private cinematic archive
+
+</div>
+
+</div>
+
+</section>
+
+<script>
+
+/* =========================
+PASSWORD ENGINE
+========================= */
+
+const enterBtn =
+document.getElementById("enterBtn");
+
+const denied =
+document.getElementById("denied");
+
+enterBtn.addEventListener("click",()=>{
+
+const value =
+input.value;
+
+if(value === "199"){
+
+gsap.to(".gate-card",{
+
+scale:.92,
+opacity:0,
+
+duration:1.2,
+
+ease:"power4.inOut"
+
+});
+
+gsap.to("#gate",{
+
+opacity:0,
+
+duration:2,
+
+delay:.4,
+
+pointerEvents:"none"
+
+});
+
+gsap.to(window,{
+
+scrollTo:"#hero",
+
+duration:2.5,
+
+ease:"power3.inOut"
+
+});
+
+}else{
+
+gsap.fromTo(".gate-card",
+
+{
+x:-10
+},
+
+{
+x:10,
+
+repeat:5,
+yoyo:true,
+
+duration:.08,
+
+ease:"power1.inOut"
+}
+
+);
+
+gsap.to(denied,{
+
+opacity:01,
+
+duration:.4
+
+});
+
+setTimeout(()=>{
+
+gsap.to(denied,{
+
+opacity:0,
+
+duration:.4
+
+});
+
+},1800);
+
+}
+
+});
+
+/* =========================
+ENTER KEY
+========================= */
+
+input.addEventListener("keydown",(e)=>{
+
+if(e.key === "Enter"){
+
+enterBtn.click();
+
+}
+
+});
+
+/* =========================
+CARD FLOAT
+========================= */
+
+gsap.to(".gate-card",{
+
+y:-16,
+
+repeat:-1,
+yoyo:true,
+
+duration:4,
+
+ease:"sine.inOut"
+
+});
+
+/* =========================
+LIGHT BREATH
+========================= */
+
+gsap.to(".card-light",{
+
+scale:1.2,
+
+opacity:.18,
+
+repeat:-1,
+yoyo:true,
+
+duration:5,
+
+ease:"sine.inOut"
+
+});
+
+/* =========================
+SYMBOL FLOAT
+========================= */
+
+gsap.utils.toArray(".symbol")
+.forEach((symbol,i)=>{
+
+gsap.to(symbol,{
+
+y:-20,
+
+repeat:-1,
+yoyo:true,
+
+duration:3 + i,
+
+ease:"sine.inOut"
+
+});
+
+});
+
+/* =========================
+MOUSE DEPTH
+========================= */
+
+window.addEventListener("mousemove",(e)=>{
+
+const x =
+(e.clientX/window.innerWidth - .5) * 20;
+
+const y =
+(e.clientY/window.innerHeight - .5) * 20;
+
+gsap.to(".gate-card",{
+
+rotateY:x,
+rotateX:-y,
+
+transformPerspective:1000,
+
+duration:1.2,
+
+ease:"power3.out"
+
+});
+
+});
+
+/* =========================
+INPUT GLOW
+========================= */
+
+input.addEventListener("focus",()=>{
+
+gsap.to(".lock-circle",{
+
+boxShadow:
+"0 0 80px rgba(214,179,106,.18)",
+
+duration:.6
+
+});
+
+});
+
+input.addEventListener("blur",()=>{
+
+gsap.to(".lock-circle",{
+
+boxShadow:
+"0 0 50px rgba(214,179,106,.08)",
+
+duration:.6
+
+});
+
+});
+
+</script>
+
+<!-- =========================
+ULTIMATE ENDING EXPERIENCE
+PUT BEFORE </body>
+========================= -->
+
+<style>
+
+/* =========================
+ENDING CINEMA
+========================= */
+
+#ending{
+
+position:relative;
+
+min-height:140vh;
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+overflow:hidden;
+
+padding:
+200px 8vw;
+}
+
+/* =========================
+ENDING BACKGROUND
+========================= */
+
+.ending-bg{
+
+position:absolute;
+
+inset:0;
+
+overflow:hidden;
+}
+
+.ending-fog{
+
+position:absolute;
+
+border-radius:50%;
+
+filter:blur(140px);
+
+opacity:.12;
+}
+
+.ending-fog.one{
+
+width:700px;
+height:700px;
+
+background:#7c4bb1;
+
+top:-20%;
+left:-10%;
+
+animation:
+endingFogOne 16s ease-in-out infinite;
+}
+
+.ending-fog.two{
+
+width:600px;
+height:600px;
+
+background:#d6b36a;
+
+bottom:-20%;
+right:-10%;
+
+animation:
+endingFogTwo 18s ease-in-out infinite;
+}
+
+@keyframes endingFogOne{
+
+0%{
+transform:translate(0,0);
+}
+
+50%{
+transform:translate(80px,40px);
+}
+
+100%{
+transform:translate(0,0);
+}
+
+}
+
+@keyframes endingFogTwo{
+
+0%{
+transform:translate(0,0);
+}
+
+50%{
+transform:translate(-70px,-50px);
+}
+
+100%{
+transform:translate(0,0);
+}
+
+}
+
+/* =========================
+ENDING CENTER
+========================= */
+
+.ending-center{
+
+position:relative;
+
+z-index:5;
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+text-align:center;
+}
+
+/* =========================
+ROSE CLOSING
+========================= */
+
+.closing-rose{
+
+position:relative;
+
+width:240px;
+height:240px;
+
+margin-bottom:70px;
+}
+
+.closing-ring{
+
+position:absolute;
+
+inset:0;
+
+border-radius:50%;
+
+border:
+1px solid
+rgba(214,179,106,.14);
+
+}
+
+.ring-one{
+
+animation:
+ringPulse 5s infinite;
+}
+
+.ring-two{
+
+transform:scale(1.2);
+
+animation:
+ringPulse 5s infinite 1s;
+}
+
+.ring-three{
+
+transform:scale(1.4);
+
+animation:
+ringPulse 5s infinite 2s;
+}
+
+@keyframes ringPulse{
+
+0%{
+opacity:.6;
+transform:scale(.8);
+}
+
+100%{
+opacity:0;
+transform:scale(1.6);
+}
+
+}
+
+/* =========================
+CENTER GLOW
+========================= */
+
+.rose-core{
+
+position:absolute;
+
+top:50%;
+left:50%;
+
+width:100px;
+height:100px;
+
+border-radius:50%;
+
+background:
+radial-gradient(circle,
+rgba(214,179,106,.35),
+transparent 70%);
+
+transform:
+translate(-50%,-50%);
+
+filter:blur(20px);
+}
+
+/* =========================
+ENDING TITLE
+========================= */
+
+.final-title{
+
+font-family:
+'Cormorant Garamond',
+serif;
+
+font-size:
+clamp(50px,7vw,120px);
+
+line-height:1;
+
+font-weight:300;
+
+max-width:1000px;
+
+margin-bottom:34px;
+
+text-shadow:
+
+0 0 40px
+rgba(255,255,255,.05),
+
+0 0 100px
+rgba(214,179,106,.08);
+}
+
+/* =========================
+ENDING TEXT
+========================= */
+
+.final-description{
+
+max-width:700px;
+
+font-size:15px;
+
+line-height:2.2;
+
+color:
+rgba(255,255,255,.52);
+
+margin-bottom:60px;
+}
+
+/* =========================
+FINAL SIGNATURE
+========================= */
+
+.final-signature{
+
+font-size:11px;
+
+letter-spacing:6px;
+
+text-transform:uppercase;
+
+color:
+rgba(214,179,106,.55);
+}
+
+/* =========================
+FLOATING LIGHTS
+========================= */
+
+.end-light{
+
+position:absolute;
+
+border-radius:50%;
+
+filter:blur(100px);
+
+opacity:.1;
+}
+
+.end-light.left{
+
+width:500px;
+height:500px;
+
+background:#8b5cf6;
+
+top:10%;
+left:-200px;
+}
+
+.end-light.right{
+
+width:400px;
+height:400px;
+
+background:#d6b36a;
+
+bottom:10%;
+right:-150px;
+}
+
+/* =========================
+FADE TO BLACK
+========================= */
+
+.final-fade{
+
+position:absolute;
+
+bottom:0;
+left:0;
+
+width:100%;
+height:300px;
+
+background:
+linear-gradient(
+to bottom,
+transparent,
+#050507
+);
+
+pointer-events:none;
+}
+
+/* =========================
+ENDING PARTICLES
+========================= */
+
+.end-particles{
+
+position:absolute;
+
+inset:0;
+
+overflow:hidden;
+}
+
+.end-p{
+
+position:absolute;
+
+width:3px;
+height:3px;
+
+border-radius:50%;
+
+background:
+rgba(255,255,255,.16);
+
+animation:
+endFloat linear infinite;
+}
+
+@keyframes endFloat{
+
+0%{
+transform:
+translateY(0)
+scale(.5);
+
+opacity:0;
+}
+
+20%{
+opacity:1;
+}
+
+100%{
+transform:
+translateY(-500px)
+scale(1.6);
+
+opacity:0;
+}
+
+}
+
+/* =========================
+LAST MESSAGE
+========================= */
+
+.last-message{
+
+position:absolute;
+
+bottom:80px;
+
+left:50%;
+
+transform:
+translateX(-50%);
+
+font-size:10px;
+
+letter-spacing:8px;
+
+text-transform:uppercase;
+
+color:
+rgba(255,255,255,.2);
+}
+
+</style>
+
+<!-- =========================
+NEW ENDING
+========================= -->
+
+<section id="ending">
+
+<div class="ending-bg">
+
+<div class="ending-fog one"></div>
+
+<div class="ending-fog two"></div>
+
+<div class="end-light left"></div>
+
+<div class="end-light right"></div>
+
+<div class="end-particles"
+id="endParticles"></div>
+
+</div>
+
+<div class="ending-center">
+
+<div class="closing-rose">
+
+<div class="closing-ring ring-one"></div>
+
+<div class="closing-ring ring-two"></div>
+
+<div class="closing-ring ring-three"></div>
+
+<div class="rose-core"></div>
+
+</div>
+
+<h2 class="final-title">
+
+You were never
+just another story
+
+</h2>
+
+<p class="final-description">
+
+Some people pass through life
+
+and some people become part
+of your soul forever
+
+This universe was never
+about moments
+
+It was about feelings
+that quietly became eternal
+
+</p>
+
+<div class="final-signature">
+
+Mosha Studio
+
+</div>
+
+</div>
+
+<div class="last-message">
+
+End of transmission
+
+</div>
+
+<div class="final-fade"></div>
+
+</section>
+
+<script>
+
+/* =========================
+ENDING PARTICLES
+========================= */
+
+const endParticles =
+document.getElementById(
+"endParticles"
+);
+
+for(let i=0;i<70;i++){
+
+const p =
+document.createElement("span");
+
+p.classList.add("end-p");
+
+p.style.left =
+Math.random()*100 + "%";
+
+p.style.bottom =
+Math.random()*100 + "px";
+
+p.style.animationDuration =
+(6 + Math.random()*10) + "s";
+
+p.style.animationDelay =
+Math.random()*5 + "s";
+
+endParticles.appendChild(p);
+
+}
+
+/* =========================
+ENDING TITLE REVEAL
+========================= */
+
+gsap.from(".final-title",{
+
+scrollTrigger:{
+trigger:"#ending",
+start:"top 70%"
+},
+
+y:120,
+opacity:0,
+
+duration:2.4,
+
+ease:"power4.out"
+
+});
+
+/* =========================
+DESCRIPTION REVEAL
+========================= */
+
+gsap.from(".final-description",{
+
+scrollTrigger:{
+trigger:"#ending",
+start:"top 60%"
+},
+
+opacity:0,
+y:60,
+
+duration:2,
+
+delay:.4,
+
+ease:"power3.out"
+
+});
+
+/* =========================
+ROSE CORE BREATH
+========================= */
+
+gsap.to(".rose-core",{
+
+scale:1.3,
+
+opacity:.8,
+
+repeat:-1,
+yoyo:true,
+
+duration:4,
+
+ease:"sine.inOut"
+
+});
+
+/* =========================
+ENDING PARALLAX
+========================= */
+
+gsap.to(".ending-bg",{
+
+scrollTrigger:{
+trigger:"#ending",
+scrub:1
+},
+
+y:-100
+
+});
+
+/* =========================
+FINAL FADE FEEL
+========================= */
+
+gsap.to("body",{
+
+scrollTrigger:{
+trigger:"#ending",
+start:"bottom bottom",
+scrub:1
+},
+
+background:"#000"
+
+});
+
+/* =========================
+SIGNATURE GLOW
+========================= */
+
+gsap.to(".final-signature",{
+
+textShadow:
+"0 0 20px rgba(214,179,106,.35)",
+
+repeat:-1,
+yoyo:true,
+
+duration:3
+
+});
+
+/* =========================
+LAST MESSAGE
+========================= */
+
+gsap.from(".last-message",{
+
+scrollTrigger:{
+trigger:"#ending",
+start:"top bottom"
+},
+
+opacity:0,
+
+duration:3,
+
+delay:2
+
+});
+
+/* =========================
+CINEMATIC END ZOOM
+========================= */
+
+gsap.to(".ending-center",{
+
+scrollTrigger:{
+trigger:"#ending",
+scrub:1
+},
+
+scale:1.04
+
+});
+
+/* =========================
+ROSE RINGS
+========================= */
+
+gsap.to(".closing-ring",{
+
+rotate:360,
+
+repeat:-1,
+
+duration:20,
+
+ease:"none"
+
+});
+
+/* =========================
+ENDING LIGHT MOTION
+========================= */
+
+gsap.to(".end-light.left",{
+
+x:80,
+y:40,
+
+repeat:-1,
+yoyo:true,
+
+duration:10,
+
+ease:"sine.inOut"
+
+});
+
+gsap.to(".end-light.right",{
+
+x:-60,
+y:-40,
+
+repeat:-1,
+yoyo:true,
+
+duration:12,
+
+ease:"sine.inOut"
+
+});
+
+/* =========================
+ULTIMATE FINAL MOMENT
+========================= */
+
+ScrollTrigger.create({
+
+trigger:"#ending",
+
+start:"bottom bottom",
+
+onEnter:()=>{
+
+gsap.to(".final-fade",{
+
+opacity:1,
+
+duration:4
+
+});
+
+}
+
+});
+
+</script>
+
+<!-- =========================
+FINAL PREMIUM POLISH
+LAST PART
+========================= -->
+
+<style>
+
+/* =========================
+SMOOTH SELECTION
+========================= */
+
+::selection{
+
+background:
+rgba(214,179,106,.25);
+
+color:white;
+
+}
+
+/* =========================
+GLOBAL TRANSITIONS
+========================= */
+
+*{
+
+transition:
+background-color .4s ease,
+border-color .4s ease;
+
+}
+
+/* =========================
+HIDE OVERFLOW DURING LOAD
+========================= */
+
+html.loading,
+body.loading{
+
+overflow:hidden;
+
+}
+
+/* =========================
+PREMIUM CURSOR
+========================= */
+
+.cursor{
+
+position:fixed;
+
+width:18px;
+height:18px;
+
+border-radius:50%;
+
+border:
+1px solid
+rgba(214,179,106,.6);
+
+pointer-events:none;
+
+z-index:99999;
+
+mix-blend-mode:screen;
+
+transform:
+translate(-50%,-50%);
+}
+
+.cursor-dot{
+
+position:fixed;
+
+width:4px;
+height:4px;
+
+border-radius:50%;
+
+background:
+rgba(214,179,106,.9);
+
+pointer-events:none;
+
+z-index:99999;
+
+transform:
+translate(-50%,-50%);
+}
+
+/* =========================
+MAGNETIC ELEMENTS
+========================= */
+
+.magnetic{
+
+position:relative;
+
+transform-style:preserve-3d;
+}
+
+/* =========================
+SOFT SCREEN GLOW
+========================= */
+
+.screen-glow{
+
+position:fixed;
+
+inset:0;
+
+background:
+radial-gradient(circle at center,
+rgba(255,255,255,.02),
+transparent 70%);
+
+pointer-events:none;
+
+z-index:1;
+
+mix-blend-mode:screen;
+}
+
+/* =========================
+TOP FADE
+========================= */
+
+.top-fade{
+
+position:fixed;
+
+top:0;
+left:0;
+
+width:100%;
+height:120px;
+
+background:
+linear-gradient(
+to bottom,
+rgba(8,7,12,.85),
+transparent
+);
+
+pointer-events:none;
+
+z-index:10;
+}
+
+/* =========================
+BOTTOM FADE
+========================= */
+
+.bottom-fade{
+
+position:fixed;
+
+bottom:0;
+left:0;
+
+width:100%;
+height:120px;
+
+background:
+linear-gradient(
+to top,
+rgba(8,7,12,.85),
+transparent
+);
+
+pointer-events:none;
+
+z-index:10;
+}
+
+/* =========================
+PERFORMANCE
+========================= */
+
+.memory-visual,
+.hero-title,
+.gate-card,
+.final-title{
+
+will-change:
+transform,
+opacity;
+
+}
+
+/* =========================
+MOBILE CURSOR OFF
+========================= */
+
+@media(max-width:768px){
+
+.cursor,
+.cursor-dot{
+
+display:none;
+
+}
+
+}
+
+/* =========================
+ULTRA MOBILE OPTIMIZATION
+========================= */
+
+@media(max-width:600px){
+
+.hero-title{
+
+font-size:58px;
+
+}
+
+.memory-heading{
+
+font-size:52px;
+
+}
+
+.final-title{
+
+font-size:58px;
+
+}
+
+.gate-card{
+
+padding:
+50px 28px;
+
+}
+
+.memory-visual{
+
+height:420px;
+
+}
+
+.big-quote{
+
+font-size:34px;
+
+line-height:1.3;
+
+}
+
+}
+
+</style>
+
+<!-- =========================
+FINAL ELEMENTS
+========================= -->
+
+<div class="cursor"></div>
+
+<div class="cursor-dot"></div>
+
+<div class="screen-glow"></div>
+
+<div class="top-fade"></div>
+
+<div class="bottom-fade"></div>
+
+<script>
+
+/* =========================
+LOADING CLASS
+========================= */
+
+document.documentElement
+.classList.add("loading");
+
+window.addEventListener("load",()=>{
+
+setTimeout(()=>{
+
+document.documentElement
+.classList.remove("loading");
+
+},4000);
+
+});
+
+/* =========================
+PREMIUM CURSOR
+========================= */
+
+const cursor =
+document.querySelector(".cursor");
+
+const dot =
+document.querySelector(".cursor-dot");
+
+window.addEventListener("mousemove",(e)=>{
+
+gsap.to(cursor,{
+
+x:e.clientX,
+y:e.clientY,
+
+duration:.5,
+
+ease:"power3.out"
+
+});
+
+gsap.to(dot,{
+
+x:e.clientX,
+y:e.clientY,
+
+duration:.15
+
+});
+
+});
+
+/* =========================
+CURSOR SCALE
+========================= */
+
+document
+.querySelectorAll(
+"button,input,.memory-visual"
+)
+.forEach((el)=>{
+
+el.addEventListener("mouseenter",()=>{
+
+gsap.to(cursor,{
+
+scale:2,
+
+borderColor:
+"rgba(214,179,106,.95)",
+
+duration:.3
+
+});
+
+});
+
+el.addEventListener("mouseleave",()=>{
+
+gsap.to(cursor,{
+
+scale:1,
+
+borderColor:
+"rgba(214,179,106,.6)",
+
+duration:.3
+
+});
+
+});
+
+});
+
+/* =========================
+MAGNETIC EFFECT
+========================= */
+
+document
+.querySelectorAll("button")
+.forEach((btn)=>{
+
+btn.classList.add("magnetic");
+
+btn.addEventListener("mousemove",(e)=>{
+
+const rect =
+btn.getBoundingClientRect();
+
+const x =
+e.clientX - rect.left - rect.width/2;
+
+const y =
+e.clientY - rect.top - rect.height/2;
+
+gsap.to(btn,{
+
+x:x * .18,
+y:y * .18,
+
+duration:.6,
+
+ease:"power3.out"
+
+});
+
+});
+
+btn.addEventListener("mouseleave",()=>{
+
+gsap.to(btn,{
+
+x:0,
+y:0,
+
+duration:1,
+
+ease:"elastic.out(1,0.4)"
+
+});
+
+});
+
+});
+
+/* =========================
+TEXT REVEAL SYSTEM
+========================= */
+
+document
+.querySelectorAll(
+".memory-heading,.big-quote,.final-title"
+)
+.forEach((text)=>{
+
+const split =
+text.innerHTML.split("<br>");
+
+text.innerHTML =
+split.map(line=>
+`<span class="line-wrap">
+<span class="line-inner">
+${line}
+</span>
+</span>`
+).join("");
+
+});
+
+gsap.utils
+.toArray(".line-inner")
+.forEach((line)=>{
+
+gsap.from(line,{
+
+scrollTrigger:{
+trigger:line,
+start:"top 90%"
+},
+
+y:120,
+opacity:0,
+
+duration:1.8,
+
+ease:"power4.out"
+
+});
+
+});
+
+/* =========================
+AMBIENT BODY MOTION
+========================= */
+
+gsap.to("body",{
+
+backgroundPosition:
+"0px 40px",
+
+repeat:-1,
+yoyo:true,
+
+duration:12,
+
+ease:"sine.inOut"
+
+});
+
+/* =========================
+PREMIUM IMAGE HOVER
+========================= */
+
+document
+.querySelectorAll(".memory-visual")
+.forEach((card)=>{
+
+card.addEventListener("mouseenter",()=>{
+
+gsap.to(card,{
+
+boxShadow:
+`
+0 30px 80px rgba(0,0,0,.45),
+0 0 120px rgba(214,179,106,.08)
+`,
+
+duration:.6
+
+});
+
+});
+
+card.addEventListener("mouseleave",()=>{
+
+gsap.to(card,{
+
+boxShadow:
+`
+0 20px 60px rgba(0,0,0,.35),
+0 0 60px rgba(214,179,106,.03)
+`,
+
+duration:.6
+
+});
+
+});
+
+});
+
+/* =========================
+PARALLAX CAMERA
+========================= */
+
+window.addEventListener("scroll",()=>{
+
+const scroll =
+window.scrollY;
+
+gsap.to(".screen-glow",{
+
+opacity:
+0.4 + scroll * .00008,
+
+duration:1
+
+});
+
+});
+
+/* =========================
+FINAL EXPERIENCE LOCK
+========================= */
+
+window.addEventListener(
+"contextmenu",
+(e)=>e.preventDefault()
+);
+
+/* =========================
+PREVENT IMAGE DRAG
+========================= */
+
+document
+.querySelectorAll("img")
+.forEach((img)=>{
+
+img.setAttribute(
+"draggable",
+"false"
+);
+
+});
+
+/* =========================
+SCROLL SMOOTHNESS BOOST
+========================= */
+
+gsap.ticker.lagSmoothing(0);
+
+/* =========================
+ATMOSPHERIC AUDIO READY
+========================= */
+
+const audio =
+new Audio();
+
+audio.loop = true;
+
+/*
+ADD AUDIO FILE LATER:
+
+audio.src = "audio.mp3"
+
+audio.volume = 0.15
+
+audio.play()
+
+*/
+
+/* =========================
+FINAL CONSOLE MESSAGE
+========================= */
+
+console.log(
+"%cUniverse Complete",
+"
+font-size:40px;
+color:#d6b36a;
+font-family:serif;
+"
+);
+
+console.log(
+"%cDesigned by Mosha Studio",
+"
+font-size:14px;
+letter-spacing:4px;
+color:#888;
+"
+);
+
+/* =========================
+THE END
+========================= */
+
+</script>
+
